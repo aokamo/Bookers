@@ -18,15 +18,30 @@ class BooksController < ApplicationController
   
   def create
     @book = Book.new(book_params)
-    respond_to do |format|
       if @book.save
-        format.html { redirect_to @book, notice: "Your Book was successfully created." }
+        redirect_to book_path(@book), notice:'Your Book was successfully created.'
+      else
+        @books = Book.all
+        render :index
       end
-    end
   end
   
   def update
+    @book = Book.find(params[:id])
+    @book.update(book_params)
+    if @book.save(book_params)
+      redirect_to books_path, notice:'Your Book was successfully updated.'
+    else
+      render :edit
+    end
   end
+  
+  def destroy
+    @book = Book.find(params[:id])
+    @book.destroy
+    redirect_to books_path, notice: 'The book was successfully destroyed.'
+    
+  end  
   
   private
     def book_params
